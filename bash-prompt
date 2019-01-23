@@ -14,13 +14,16 @@ NORMAL="${ESC}[0m"
 BOLD="${ESC}[1m"
 RESET="\e[0m"
 
+# Set the FG colour for re-use in multiple parts later
+FG=${GREEN}
+
 # get current branch in git repo
 function parse_git_branch() {
     BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     if [ ! "${BRANCH}" == "" ]
     then
         STAT=`parse_git_dirty`
-        echo "${YELLOW}━[ ${WHITE} ${BRANCH}${BOLD}${RED}${STAT} ${NORMAL}${YELLOW}]"
+        echo "${FG}━[ ${WHITE} ${BRANCH}${BOLD}${RED}${STAT} ${NORMAL}${FG}]"
     else
         echo ""
     fi
@@ -61,6 +64,7 @@ function parse_git_dirty {
     fi
 }
 
-export PS1="\[${YELLOW}\]┏━[ \[${WHITE}\]\u\[${YELLOW}\]@\[${WHITE}\]\h \[${YELLOW}\] | \[${WHITE}\]\A \[${YELLOW}\]]━[ \[${WHITE}\]\w \[${YELLOW}\]]\`parse_git_branch\`
-\[${YELLOW}\]┗━━━[\[${RESET}\] "
+
+export PS1="\[${FG}\]┏━[ \[${WHITE}\]\u\[${FG}\]@\[${WHITE}\]\h \[${FG}\] | \[${WHITE}\]\A \[${FG}\]]━[ \[${WHITE}\]\w \[${FG}\]]\`parse_git_branch\`
+\[${FG}\]┗━━━[\[${RESET}\] "
 
