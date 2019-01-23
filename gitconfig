@@ -1,0 +1,20 @@
+[user]
+    email = tristan@scott-mail.net
+    name = Tristan Scott
+
+[push]
+    default = simple
+
+[diff]
+    submodule = log
+
+[alias]
+    lol = log --graph --decorate --pretty=oneline --abbrev-commit
+    lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+
+[color]
+    ui = true
+
+[format]
+    pretty = format:"%h%x09%an%x09%ad%x09%s"
+

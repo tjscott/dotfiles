@@ -1,0 +1,66 @@
+# vim:filetype=sh
+# Shamelessly cribbed from https://github.com/Airblader/dotfiles-manjaro
+
+ESC="$(echo -en '\e')"
+BLACK="${ESC}[30m"
+RED="${ESC}[31m"
+GREEN="${ESC}[32m"
+YELLOW="${ESC}[33m"
+BLUE="${ESC}[34m"
+PURPLE="${ESC}[35m"
+CYAN="${ESC}[36m"
+WHITE="${ESC}[37m"
+NORMAL="${ESC}[0m"
+BOLD="${ESC}[1m"
+RESET="\e[0m"
+
+# get current branch in git repo
+function parse_git_branch() {
+    BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+    if [ ! "${BRANCH}" == "" ]
+    then
+        STAT=`parse_git_dirty`
+        echo "${YELLOW}━[ ${WHITE} ${BRANCH}${BOLD}${RED}${STAT} ${NORMAL}${YELLOW}]"
+    else
+        echo ""
+    fi
+}
+
+# get current status of git repo
+function parse_git_dirty {
+    status=`git status -uno 2>&1 | tee`
+    dirty=`echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?"`
+    untracked=`echo -n "${status}" 2> /dev/null | grep "Untracked files" &> /dev/null; echo "$?"`
+    ahead=`echo -n "${status}" 2> /dev/null | grep "Your branch is ahead of" &> /dev/null; echo "$?"`
+    newfile=`echo -n "${status}" 2> /dev/null | grep "new file:" &> /dev/null; echo "$?"`
+    renamed=`echo -n "${status}" 2> /dev/null | grep "renamed:" &> /dev/null; echo "$?"`
+    deleted=`echo -n "${status}" 2> /dev/null | grep "deleted:" &> /dev/null; echo "$?"`
+    bits=''
+    if [ "${renamed}" == "0" ]; then
+        bits="${YELLOW}>${bits}"
+    fi
+    if [ "${ahead}" == "0" ]; then
+        bits="${RED}*${bits}"
+    fi
+    if [ "${newfile}" == "0" ]; then
+        bits="${GREEN}+${bits}"
+    fi
+    if [ "${untracked}" == "0" ]; then
+        bits="${YELLOW}?${bits}"
+    fi
+    if [ "${deleted}" == "0" ]; then
+        bits="${RED}x${bits}"
+    fi
+    if [ "${dirty}" == "0" ]; then
+        bits="${RED}!${bits}"
+    fi
+    if [ ! "${bits}" == "" ]; then
+        echo " ${bits}"
+    else
+        echo ""
+    fi
+}
+
+export PS1="\[${YELLOW}\]┏━[ \[${WHITE}\]\u\[${YELLOW}\]@\[${WHITE}\]\h \[${YELLOW}\] | \[${WHITE}\]\A \[${YELLOW}\]]━[ \[${WHITE}\]\w \[${YELLOW}\]]\`parse_git_branch\`
+\[${YELLOW}\]┗━━━[\[${RESET}\] "
+
