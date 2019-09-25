@@ -13,6 +13,7 @@ if [ -d ~/.bash.d ]; then
     done
 fi
 
+alias ll='ls -l'
 alias gup='(cd $(git rev-parse --show-toplevel); git pull; git submodule init; git submodule update --recursive)'
 alias virtualenv3='virtualenv -p /usr/bin/python3'
 
